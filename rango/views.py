@@ -9,7 +9,7 @@ from rango.models import Page
 from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 
 # each function is a view
-def index(request):
+def index(request): 
     # Query the database for a list of ALL categories currently stored.
     # Order the categories by the number of likes in descending order.
     # Retrieve the top 5 only -- or all if less than 5.
@@ -25,11 +25,19 @@ def index(request):
     # add pages list to the context_dict
     context_dict['pages'] = page_list 
 
+    # test cookie functionality
+    request.session.set_test_cookie()
+   
     # Render the response and send it to the client. 
     # Note that the first parameter is the template we wish to use.
     return render(request, 'rango/index.html', context=context_dict)
 
 def about(request):
+    # test cookie functionality
+    if request.session.test_cookie_worked():
+        print("TEST COOKIES WORKED!")
+        request.session.delete_test_cookie()
+
     return render(request, 'rango/about.html')
 
 def show_category(request, category_name_slug):
