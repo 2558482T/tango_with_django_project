@@ -25,13 +25,17 @@ def index(request):
 
     # Call the helper function to handle the cookies
     visitor_cookie_handler(request)
-    context_dict['visits'] = request.session['visits']
 
-    response = render(request, 'rango/index.html', context=context_dict)
-    return response
+    # Render the response and send it to the client. 
+    return render(request, 'rango/index.html', context=context_dict)
+
 
 def about(request):
-    return render(request, 'rango/about.html')
+    context_dict = {}
+    visitor_cookie_handler(request)
+    context_dict['visits'] = request.session['visits']
+
+    return render(request, 'rango/about.html', context=context_dict)
 
 def show_category(request, category_name_slug):
     # Create a context dictionary which we can pass to the template rendering engine.
@@ -59,7 +63,6 @@ def show_category(request, category_name_slug):
         context_dict['category'] = None
         context_dict['pages'] = None
 
-    # Render the response and send it to the client. 
     return render(request, 'rango/category.html', context=context_dict)
 
 @login_required
@@ -170,7 +173,7 @@ def user_login(request):
         user = authenticate(username=username, password=password)
 
         # If we have a User object, the details are correct.
-        # If None, no user # with matching credentials was found.
+        # If None, no user with matching credentials was found.
         if user:
             # Is the account active? It could have been disabled.
             if user.is_active:
